@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
  * Created by mykhailo.zvonov on 19/10/2016.
  */
 
-public class ProfilePictureChooseActivity extends AppCompatActivity {
+public class ProfilePictureChooserActivity extends AppCompatActivity {
 
     public static final String EXTRA_IMG_ID = "image_id";
 

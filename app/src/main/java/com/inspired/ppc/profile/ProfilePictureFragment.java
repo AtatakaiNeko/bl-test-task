@@ -18,7 +18,7 @@ import com.facebook.rebound.SpringUtil;
 import com.facebook.rebound.ui.Util;
 import com.inspired.ppc.App;
 import com.inspired.ppc.R;
-import com.inspired.ppc.chooser.ProfilePictureChooseActivity;
+import com.inspired.ppc.chooser.ProfilePictureChooserActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,19 +58,29 @@ public class ProfilePictureFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
+        setProfilePicture();
+
+        return v;
+    }
+
+    private void setProfilePicture() {
+        //Get image
         int imgSize = Util.dpToPx(200, getResources());
 
         App.getPicasso()
                 .load(Profile.getCurrentProfile().getProfilePictureUri(imgSize, imgSize))
                 .noFade()
                 .into(mProfilePicture);
-
-        return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        //Restore view state
+        mProfilePicture.setScaleX(1);
+        mProfilePicture.setScaleY(1);
+
         mScaleSpring.addListener(mSpringListener);
     }
 
@@ -93,13 +103,13 @@ public class ProfilePictureFragment extends Fragment {
                 mScaleSpring.setEndValue(0);
                 break;
         }
-        return true;
+        return false;
     }
 
     @OnClick(R.id.img_profile_picture)
     public void onProfilePictureClick(View v) {
         //Start chooser
-        Intent i = new Intent(getContext(), ProfilePictureChooseActivity.class);
+        Intent i = new Intent(getContext(), ProfilePictureChooserActivity.class);
 
         startActivityForResult(i, REQUEST_CODE);
     }

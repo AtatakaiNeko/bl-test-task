@@ -18,11 +18,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".chooser.ProfilePictureChooserActivity" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@style/com_facebook_activity_theme" />
+
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
