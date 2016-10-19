@@ -44,6 +44,7 @@ public class LoginFragment extends Fragment implements FacebookCallback<LoginRes
 
         ButterKnife.bind(this, v);
 
+        mLoginButton.setReadPermissions("user_photos");
         mLoginButton.setFragment(this);
         mLoginButton.registerCallback(mCallbackManager, this);
 

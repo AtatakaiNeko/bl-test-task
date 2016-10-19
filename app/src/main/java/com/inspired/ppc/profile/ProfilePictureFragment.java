@@ -1,5 +1,6 @@
 package com.inspired.ppc.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,18 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.Profile;
-import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.rebound.BaseSpringSystem;
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringSystem;
 import com.facebook.rebound.SpringUtil;
+import com.facebook.rebound.ui.Util;
+import com.inspired.ppc.App;
 import com.inspired.ppc.R;
+import com.inspired.ppc.chooser.ProfilePictureChooseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A {@link Fragment} to display an user's profile picture.
@@ -30,8 +34,10 @@ import butterknife.OnTouch;
 
 public class ProfilePictureFragment extends Fragment {
 
+    private static final int REQUEST_CODE = 2222;
+
     @BindView(R.id.img_profile_picture)
-    ProfilePictureView mProfilePicture;
+    CircleImageView mProfilePicture;
 
     private final BaseSpringSystem mSpringSystem = SpringSystem.create();
     private final ExampleSpringListener mSpringListener = new ExampleSpringListener();
@@ -52,8 +58,12 @@ public class ProfilePictureFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        mProfilePicture.setProfileId(Profile.getCurrentProfile().getId());
-        Profile.getCurrentProfile().getProfilePictureUri()
+        int imgSize = Util.dpToPx(200, getResources());
+
+        App.getPicasso()
+                .load(Profile.getCurrentProfile().getProfilePictureUri(imgSize, imgSize))
+                .noFade()
+                .into(mProfilePicture);
 
         return v;
     }
@@ -89,6 +99,15 @@ public class ProfilePictureFragment extends Fragment {
     @OnClick(R.id.img_profile_picture)
     public void onProfilePictureClick(View v) {
         //Start chooser
+        Intent i = new Intent(getContext(), ProfilePictureChooseActivity.class);
+
+        startActivityForResult(i, REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Process picture selection
     }
 
     private class ExampleSpringListener extends SimpleSpringListener {
