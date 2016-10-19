@@ -19,6 +19,7 @@ import com.facebook.rebound.ui.Util;
 import com.inspired.ppc.App;
 import com.inspired.ppc.R;
 import com.inspired.ppc.chooser.ProfilePictureChooserActivity;
+import com.skyfishjy.library.RippleBackground;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,9 @@ public class ProfilePictureFragment extends Fragment {
 
     @BindView(R.id.img_profile_picture)
     CircleImageView mProfilePicture;
+
+    @BindView(R.id.view_ripple)
+    RippleBackground mRippleBackground;
 
     private final BaseSpringSystem mSpringSystem = SpringSystem.create();
     private final ExampleSpringListener mSpringListener = new ExampleSpringListener();
@@ -80,13 +84,14 @@ public class ProfilePictureFragment extends Fragment {
         //Restore view state
         mProfilePicture.setScaleX(1);
         mProfilePicture.setScaleY(1);
-
+        mRippleBackground.startRippleAnimation();
         mScaleSpring.addListener(mSpringListener);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        mRippleBackground.stopRippleAnimation();
         mScaleSpring.removeListener(mSpringListener);
     }
 
