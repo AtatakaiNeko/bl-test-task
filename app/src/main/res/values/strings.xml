@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PPC</string>
     <string name="facebook_app_id">901194163344161</string>
+    <string name="label_chooser">Choose picture</string>
 </resources>

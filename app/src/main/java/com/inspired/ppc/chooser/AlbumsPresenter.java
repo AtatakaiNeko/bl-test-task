@@ -133,7 +133,7 @@ public class AlbumsPresenter extends RxPresenter<AlbumsFragment> {
                             null);
 
                     Bundle parameters = new Bundle();
-                    parameters.putString("fields", "count,picture{url},name");
+                    parameters.putString("fields", "count,picture{url},name,id");
                     request.setParameters(parameters);
 
                     List<Album> albums = getAlbums(request.executeAndWait());

@@ -26,6 +26,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import de.hdodenhof.circleimageview.CircleImageView;
+import nucleus.factory.RequiresPresenter;
+import nucleus.view.NucleusSupportFragment;
 
 /**
  * A {@link Fragment} to display an user's profile picture.
@@ -33,7 +35,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by mykhailo.zvonov on 19/10/2016.
  */
 
-public class ProfilePictureFragment extends Fragment {
+@RequiresPresenter(ProfilePicturePresenter.class)
+public class ProfilePictureFragment extends NucleusSupportFragment<ProfilePicturePresenter> {
 
     private static final int REQUEST_CODE = 2222;
 
@@ -63,6 +66,8 @@ public class ProfilePictureFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         setProfilePicture();
+
+        getActivity().setTitle(Profile.getCurrentProfile().getName());
 
         return v;
     }
@@ -123,17 +128,12 @@ public class ProfilePictureFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Process picture selection
+        getPresenter().onActivityResult(requestCode, resultCode, data);
     }
 
     private class ExampleSpringListener extends SimpleSpringListener {
         @Override
         public void onSpringUpdate(Spring spring) {
-            // On each update of the spring value, we adjust the scale of the image view to match the
-            // springs new value. We use the SpringUtil linear interpolation function mapValueFromRangeToRange
-            // to translate the spring's 0 to 1 scale to a 100% to 50% scale range and apply that to the View
-            // with setScaleX/Y. Note that rendering is an implementation detail of the application and not
-            // Rebound itself. If you need Gingerbread compatibility consider using NineOldAndroids to update
-            // your view properties in a backwards compatible manner.
             float mappedValue = (float) SpringUtil.mapValueFromRangeToRange(spring.getCurrentValue(), 0, 1, 1, 0.5);
             mProfilePicture.setScaleX(mappedValue);
             mProfilePicture.setScaleY(mappedValue);

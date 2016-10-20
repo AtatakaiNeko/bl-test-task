@@ -1,7 +1,6 @@
 package com.inspired.ppc.chooser;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,14 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.inspired.ppc.App;
 import com.inspired.ppc.R;
 import com.inspired.ppc.model.AbstractAlbum;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
-import com.squareup.picasso.Transformation;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -34,14 +31,9 @@ import nucleus.view.NucleusSupportFragment;
  */
 
 @RequiresPresenter(AlbumsPresenter.class)
-public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
-    private static final Transformation ROUNDED_TRANSFORMATION = new RoundedTransformationBuilder()
-            .borderColor(Color.TRANSPARENT)
-            .borderWidthDp(1)
-            .cornerRadiusDp(30)
-            .oval(false)
-            .build();
+public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> implements OnItemClickListener<AbstractAlbum> {
 
+    public static final String TAG_ALBUM_DETAILS = "albumDetails";
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
@@ -52,7 +44,9 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
 
         ButterKnife.bind(this, v);
 
-        getPresenter().requestAlbums();
+        if (savedInstanceState == null) {
+            getPresenter().requestAlbums();
+        }
         return v;
     }
 
@@ -63,11 +57,20 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setAdapter(new AlbumsAdapter(getContext(), items));
+        mRecyclerView.setAdapter(new AlbumsAdapter(getContext(), items, this));
     }
 
     public void onItemsError(Throwable throwable) {
         Log.e("TAG", "Error", throwable);
+    }
+
+    @Override
+    public void onItemClick(View item, AbstractAlbum data) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, AlbumDetailsFragment.create(data))
+                .addToBackStack(TAG_ALBUM_DETAILS)
+                .commit();
     }
 
     private static class AlbumsAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
@@ -76,14 +79,17 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
 
         private List<AbstractAlbum> mItems;
 
-        public AlbumsAdapter(Context context, List<AbstractAlbum> albums) {
+        private OnItemClickListener<AbstractAlbum> mListener;
+
+        public AlbumsAdapter(Context context, List<AbstractAlbum> albums, OnItemClickListener<AbstractAlbum> listener) {
             mItems = albums;
             mInflater = LayoutInflater.from(context);
+            mListener = listener;
         }
 
         @Override
         public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new AlbumViewHolder(mInflater.inflate(R.layout.list_item_album, parent, false));
+            return new AlbumViewHolder(mInflater.inflate(R.layout.list_item_album, parent, false), mListener);
         }
 
         @Override
@@ -97,23 +103,25 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
         }
     }
 
-    static class AlbumViewHolder extends RecyclerView.ViewHolder {
+    static class AlbumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.title)
         TextView mTitle;
         @BindView(R.id.img_album_cover)
-        ImageView mImageView;
+        RoundedImageView mImageView;
         @BindView(R.id.text_count)
         TextView mCount;
 
         private AbstractAlbum mCurrentAlbum;
+        private OnItemClickListener<AbstractAlbum> mListener;
 
-        public AlbumViewHolder(View itemView) {
+        AlbumViewHolder(View itemView, OnItemClickListener<AbstractAlbum> listener) {
             super(itemView);
-
+            mListener = listener;
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
-        public void bind(AbstractAlbum album) {
+        void bind(AbstractAlbum album) {
             mCurrentAlbum = album;
 
             mTitle.setText(album.name);
@@ -121,9 +129,15 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> {
 
             App.getPicasso()
                     .load(album.getCoverPhotoUrl())
-                    .fit()
-                    .transform(ROUNDED_TRANSFORMATION)
                     .into(mImageView);
         }
+
+        @Override
+        public void onClick(View view) {
+            if (mListener != null) {
+                mListener.onItemClick(view, mCurrentAlbum);
+            }
+        }
+
     }
 }

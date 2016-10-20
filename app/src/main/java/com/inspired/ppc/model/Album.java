@@ -1,5 +1,7 @@
 package com.inspired.ppc.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -18,6 +20,25 @@ public class Album extends AbstractAlbum {
 
         this.coverPhoto = coverPhoto;
         this.photosCount = photosCount;
+    }
+
+
+    protected Album(Parcel in) {
+        super(in);
+        this.photosCount = in.readInt();
+        //We do not need cover photo here
+        this.coverPhoto = null;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(this.photosCount);
     }
 
     @Override
@@ -45,4 +66,16 @@ public class Album extends AbstractAlbum {
             this.url = url;
         }
     }
+
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel source) {
+            return new Album(source);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
 }
