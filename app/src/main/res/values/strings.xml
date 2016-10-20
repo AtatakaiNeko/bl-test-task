@@ -2,4 +2,6 @@
     <string name="app_name">PPC</string>
     <string name="facebook_app_id">901194163344161</string>
     <string name="label_chooser">Choose picture</string>
+    <string name="error_load_photos">Failed to load photos for an album: %s</string>
+    <string name="error_load_albums">Failed to load list of albums.</string>
 </resources>

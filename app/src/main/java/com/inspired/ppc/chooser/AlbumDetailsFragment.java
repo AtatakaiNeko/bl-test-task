@@ -1,6 +1,8 @@
 package com.inspired.ppc.chooser;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.inspired.ppc.App;
 import com.inspired.ppc.R;
@@ -74,12 +77,15 @@ public class AlbumDetailsFragment extends NucleusSupportFragment<AlbumDetailsPre
     }
 
     public void onError(Throwable e) {
-
+        Toast.makeText(getContext(), getString(R.string.error_load_photos, mAlbum.name), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onItemClick(View item, Photo data) {
-
+        Intent i = new Intent();
+        i.putExtra(ProfilePictureChooserActivity.EXTRA_PHOTO, data);
+        getActivity().setResult(Activity.RESULT_OK, i);
+        getActivity().finish();
     }
 
     static class PhotosAdapter extends RecyclerView.Adapter<PhotoViewHolder> {

@@ -38,7 +38,7 @@ import nucleus.view.NucleusSupportFragment;
 @RequiresPresenter(ProfilePicturePresenter.class)
 public class ProfilePictureFragment extends NucleusSupportFragment<ProfilePicturePresenter> {
 
-    private static final int REQUEST_CODE = 2222;
+    public static final int REQUEST_CODE = 2222;
 
     @BindView(R.id.img_profile_picture)
     CircleImageView mProfilePicture;
@@ -65,19 +65,18 @@ public class ProfilePictureFragment extends NucleusSupportFragment<ProfilePictur
 
         ButterKnife.bind(this, v);
 
-        setProfilePicture();
-
         getActivity().setTitle(Profile.getCurrentProfile().getName());
-
+        //Get image
+        int imgSize = Util.dpToPx(200, getResources());
+        if (savedInstanceState == null) {
+            getPresenter().getProfilePicture(imgSize);
+        }
         return v;
     }
 
-    private void setProfilePicture() {
-        //Get image
-        int imgSize = Util.dpToPx(200, getResources());
-
+    public void setProfilePicture(String url) {
         App.getPicasso()
-                .load(Profile.getCurrentProfile().getProfilePictureUri(imgSize, imgSize))
+                .load(url)
                 .noFade()
                 .into(mProfilePicture);
     }

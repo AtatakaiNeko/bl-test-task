@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 public class ProfilePictureChooserActivity extends AppCompatActivity {
 
-    public static final String EXTRA_IMG_ID = "image_id";
+    public static final String EXTRA_PHOTO = "photo";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

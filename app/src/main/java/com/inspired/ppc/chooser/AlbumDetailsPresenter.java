@@ -84,11 +84,11 @@ public class AlbumDetailsPresenter extends RxPresenter<AlbumDetailsFragment> {
                 try {
                     GraphRequest request = GraphRequest.newGraphPathRequest(
                             AccessToken.getCurrentAccessToken(),
-                            mAlbum.albumId,
+                            mAlbum.albumId+"/photos",
                             null);
 
                     Bundle parameters = new Bundle();
-                    parameters.putString("fields", "photos{picture}");
+                    parameters.putString("fields", "picture,images,id");
                     request.setParameters(parameters);
 
                     subscriber.onNext(getPhotos(request.executeAndWait()));
@@ -108,7 +108,7 @@ public class AlbumDetailsPresenter extends RxPresenter<AlbumDetailsFragment> {
         } else {
             List<Photo> photos;
 
-            photos = mGson.fromJson(response.getJSONObject().getJSONObject("photos").getJSONArray("data").toString(), new TypeToken<List<Photo>>() {
+            photos = mGson.fromJson(response.getJSONObject().getJSONArray("data").toString(), new TypeToken<List<Photo>>() {
             }.getType());
 
             GraphRequest request = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);

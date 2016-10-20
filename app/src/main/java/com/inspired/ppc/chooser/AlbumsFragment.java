@@ -7,11 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.inspired.ppc.App;
 import com.inspired.ppc.R;
@@ -51,17 +51,13 @@ public class AlbumsFragment extends NucleusSupportFragment<AlbumsPresenter> impl
     }
 
     public void onItemsNext(List<AbstractAlbum> items) {
-        for (AbstractAlbum album : items) {
-            Log.d("TAG", "Album: " + album.name + " Count: " + album.getPhotosCount());
-        }
-
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(new AlbumsAdapter(getContext(), items, this));
     }
 
     public void onItemsError(Throwable throwable) {
-        Log.e("TAG", "Error", throwable);
+        Toast.makeText(getContext(), R.string.error_load_albums, Toast.LENGTH_LONG).show();
     }
 
     @Override
