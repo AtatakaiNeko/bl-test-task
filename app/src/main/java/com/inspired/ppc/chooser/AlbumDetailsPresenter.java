@@ -84,7 +84,7 @@ public class AlbumDetailsPresenter extends RxPresenter<AlbumDetailsFragment> {
                 try {
                     GraphRequest request = GraphRequest.newGraphPathRequest(
                             AccessToken.getCurrentAccessToken(),
-                            mAlbum.albumId+"/photos",
+                            mAlbum.albumId + "/photos",
                             null);
 
                     Bundle parameters = new Bundle();

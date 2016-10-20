@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -15,6 +16,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.inspired.ppc.R;
+import com.inspired.ppc.profile.ProfilePictureFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +61,9 @@ public class LoginFragment extends Fragment implements FacebookCallback<LoginRes
 
     @Override
     public void onSuccess(LoginResult loginResult) {
-        Log.d("TAG", "Success");
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new ProfilePictureFragment())
+                .commit();
     }
 
     @Override
@@ -69,6 +73,7 @@ public class LoginFragment extends Fragment implements FacebookCallback<LoginRes
 
     @Override
     public void onError(FacebookException error) {
-        Log.d("TAG", "Error");
+        Toast.makeText(getContext(), R.string.error_login, Toast.LENGTH_LONG).show();
+        ;
     }
 }

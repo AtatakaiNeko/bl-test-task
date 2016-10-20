@@ -1,7 +1,6 @@
 package com.inspired.ppc.chooser;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,11 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.inspired.ppc.App;
 import com.inspired.ppc.R;
+import com.inspired.ppc.adapter.PhotosAdapter;
 import com.inspired.ppc.model.AbstractAlbum;
 import com.inspired.ppc.model.Photo;
 
@@ -35,6 +33,7 @@ import nucleus.view.NucleusSupportFragment;
 public class AlbumDetailsFragment extends NucleusSupportFragment<AlbumDetailsPresenter> implements OnItemClickListener<Photo> {
 
     private static final String ARG_ALBUM = "album";
+    public static final int SPAN_COUNT = 3;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -72,8 +71,8 @@ public class AlbumDetailsFragment extends NucleusSupportFragment<AlbumDetailsPre
 
     public void onItemsNext(List<Photo> photos) {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        mRecyclerView.setAdapter(new PhotosAdapter(getContext(), photos, this));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
+        mRecyclerView.setAdapter(new PhotosAdapter(getContext(), photos, this, SPAN_COUNT));
     }
 
     public void onError(Throwable e) {
@@ -88,63 +87,4 @@ public class AlbumDetailsFragment extends NucleusSupportFragment<AlbumDetailsPre
         getActivity().finish();
     }
 
-    static class PhotosAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
-
-        private LayoutInflater mInflater;
-        private List<Photo> mItems;
-
-        private OnItemClickListener<Photo> mListener;
-
-        public PhotosAdapter(Context context, List<Photo> photos, OnItemClickListener<Photo> listener) {
-            mInflater = LayoutInflater.from(context);
-            mItems = photos;
-            mListener = listener;
-        }
-
-        @Override
-        public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new PhotoViewHolder(mInflater.inflate(R.layout.list_item_photo, parent, false), mListener);
-        }
-
-        @Override
-        public void onBindViewHolder(PhotoViewHolder holder, int position) {
-            holder.bind(mItems.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mItems != null ? mItems.size() : 0;
-        }
-    }
-
-    static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.img_photo)
-        ImageView mPhotoImage;
-
-        private Photo mCurrentPhoto;
-        private OnItemClickListener<Photo> mListener;
-
-        public PhotoViewHolder(View itemView, OnItemClickListener<Photo> listener) {
-            super(itemView);
-            mListener = listener;
-
-            ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        public void bind(Photo photo) {
-            mCurrentPhoto = photo;
-
-            App.getPicasso()
-                    .load(photo.picture)
-                    .into(mPhotoImage);
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (mListener != null) {
-                mListener.onItemClick(view, mCurrentPhoto);
-            }
-        }
-    }
 }
