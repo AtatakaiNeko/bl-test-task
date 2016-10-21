@@ -1,4 +1,4 @@
-# bl-test-task
+# Profile Picture Changer
 
 An application was created as part of a test task.
 
